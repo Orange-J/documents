@@ -211,3 +211,64 @@ http.createServer((request, response) => {
 }).listen(8080);
 ```
 
+# 回显的服务器示例
+
+让我们简化前面那个例子来实现一个简单的回显服务器, 它会把所受到的请求直接响应给浏览器. 我们需要做的是从请求流中抓取数据, 然后写入响应流, 和前面例子里类似.
+
+```
+const http = require('http');
+
+http.createServer((request, response) => {
+    let body = [];
+    request.on('data', (chunk) => {
+        body.push(chunk);
+    }).on('end', () => {
+        body = Buffer.concat(body).toString();
+        response.end(body);
+    });
+}).listen(8080);
+```
+
+现在我们调整一下. 我们改为只在以下条件满足时才回显:
+
+- 请求类型是POST.
+
+- URL是 `/echo`.
+
+在其他情况下, 只简单地响应404.
+
+```
+const http = require('http');
+
+http.createServer((request, response) => {
+  if (request.method === 'POST' && request.url === '/echo') {
+    let body = [];
+    request.on('data', (chunk) => {
+      body.push(chunk);
+    }).on('end', () => {
+      body = Buffer.concat(body).toString();
+      response.end(body);
+    });
+  } else {
+    response.statusCode = 404;
+    response.end();
+  }
+}).listen(8080);
+```
+
+> 注意: 通过像上面那样检查URL, 我们实际是进行了一种形式的"路由". 其他形式的路由可以像 `switch` 状态判断那样简单, 也可以像 `express` 框架那样复杂. 如果你正在寻找一个值处理路由而不关心其他操作的东西, 可以试试 `router`.
+
+真棒! 现在让我们尝试简化这个处理. 要记着, `request` 对象是个 `ReadableStream` , `response` 对象是个 `WritableStream`. 那也意味着我们可以用 `pipe` 把数据从一个对象传输另一个对象. 这正是我们想要的回显服务器!
+
+```
+const http = require('http');
+
+http.createServer((request, response) => {
+  if (request.method === 'POST' && request.url === '/echo') {
+    request.pipe(response);
+  } else {
+    response.statusCode = 404;
+    response.end();
+  }
+}).listen(8080);
+```
