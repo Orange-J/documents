@@ -4,7 +4,7 @@
 
 原文地址: https://promisesaplus.com/
 
-一个 *promise* 代表了一个异步操作的最终结果。与一个 promise 交互的主要方式是通过它的 `then` 方法向 promise 注册回调函数(callbacks)，回调函数则用来接收 promise 的的最终值(eventual value)或者promise失败(cannot be fulfilled)的原因。
+一个 *promise* 代表了一个异步操作的最终结果。与一个 promise 交互的主要方式是通过它的 `then` 方法向 promise 注册回调函数(callbacks)，回调函数则用来接收 promise 的最终值(eventual value)或者promise失败(cannot be fulfilled)的原因。
 
 本规范详细描述了 `then` 方法的行为，提供了一个可互操作(interoperable)的基础，所有遵循 **Promises/A+** 规范的promise实现都可以依赖这个基础。因此，可以认为本规范是非常稳定的。尽管 Promises/A+ 组织可能会偶尔对本规范进行小幅的且向后兼容的修订以处理一些新发现的极端情况，我们只会在谨慎考虑、讨论和测试后才会向规范中加入较大的或向后不兼容的改动。
 
